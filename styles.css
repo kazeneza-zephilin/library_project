@@ -1,0 +1,17 @@
+:root {
+    --font-size: 14px
+}
+
+.top-title {
+    text-align: center;
+}
+.library-table {
+    width: 700px;
+    background-color: aqua;
+}
+.row {
+    background-color: goldenrod;
+}
+.header-row {
+    text-align: center;
+}
