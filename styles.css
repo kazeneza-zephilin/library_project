@@ -6,13 +6,20 @@
     text-align: center;
     font-size: 24px;
 }
-.library-table {
+.main_container {
+    display: flex;
+}
+.my_table {
     width: 700px;
-    background-color: aqua;
 }
 .row {
-    background-color: goldenrod;
+    background-color: gainsboro;
 }
 .header-row {
     text-align: center;
+}
+
+td {
+    width: 150px;
+    height: 50px;
 }

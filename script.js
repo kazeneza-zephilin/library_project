@@ -1,5 +1,4 @@
-const table = document.createElement('table');
-table.classList.add('library-table');
+const table = document.querySelector(".my_table");
 const tableHeaders = table.insertRow();
 tableHeaders.classList.add('header-row', 'row');
 
@@ -11,6 +10,8 @@ const bookReleaseYear = tableHeaders.insertCell();
 bookReleaseYear.textContent = "Year";
 const bookPages = tableHeaders.insertCell();
 bookPages.textContent = "pages";
+const readStatus = tableHeaders.insertCell();
+readStatus.textContent = "readed yes/no";
 document.body.appendChild(table);
 
 table.appendChild(tableHeaders)
@@ -48,3 +49,19 @@ addBookToLibrary(book2);
 addBookToLibrary(book3);
 addBookToLibrary(book4);
 addBookToLibrary(book5);
+
+function displayBook(library){
+    for(let book of library){
+        const readButton = document.createElement("button");
+        readButton.textContent = "No";
+        const bookRow = table.insertRow();
+        bookRow.classList.add("book_row");
+        bookRow.insertCell(0).textContent = book.author;
+        bookRow.insertCell(1).textContent = book.title;
+        bookRow.insertCell(2).textContent = book.releaseYear;
+        bookRow.insertCell(3).textContent = book.pages;
+        bookRow.insertCell(4).appendChild(readButton)
+    }
+}
+displayBook(myLibrary)
+
