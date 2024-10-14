@@ -8,7 +8,7 @@ bookAuthor.textContent = 'Author';
 const bookTitle = tableHeaders.insertCell();
 bookTitle.textContent = "Title";
 const bookReleaseYear = tableHeaders.insertCell();
-bookReleaseYear.textContent = "Release Year";
+bookReleaseYear.textContent = "Year";
 const bookPages = tableHeaders.insertCell();
 bookPages.textContent = "pages";
 document.body.appendChild(table);
