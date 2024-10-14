@@ -12,7 +12,35 @@
     <div class="main_container">
         <table class="my_table"></table>
         <button class="add_new_btn">add new</button>
-        <dialog id=""
+        <dialog id="add_new">
+            <form action="#">
+                <p>
+                    <label for="author"></label>
+                    <input type="text" id="author">
+                </p>
+                <p>
+                    <label for="title"></label>
+                    <input type="text" id="title">
+                </p>
+                <p>
+                    <label for="year"></label>
+                    <input type="text" id="author">
+                </p>
+                <p>
+                    <label for="pages"></label>
+                    <input type="text" id="pages">
+                </p>
+                <p>
+                    <label for="action">readed</label>
+                    <select name="read action" id="action">
+                        <option value="default">No</option>
+                        <option value="#">Yes</option>
+                    </select>
+                </p>
+                <button value="concel" formmethod="dialog">cancel</button>
+                <button id="confirm-btn" >add</button>
+            </form>
+        </dialog>
     </div>
 </body>
 </html>
