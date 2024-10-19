@@ -11,31 +11,53 @@ bookReleaseYear.textContent = "Year";
 const bookPages = tableHeaders.insertCell();
 bookPages.textContent = "pages";
 const readStatus = tableHeaders.insertCell();
-readStatus.textContent = "readed yes/no";
+readStatus.textContent = "readed";
 document.body.appendChild(table);
 
 table.appendChild(tableHeaders)
 
 const myLibrary = [];
 
-function Book(author, title, releaseYear, pages) {
+function Book(author, title, releaseYear, pages, hasreaded = "No") {
     this.author = author;
     this.title = title;
     this.releaseYear = releaseYear;
     this.pages = pages;
+    this.hasreaded = hasreaded
     return {
         'author': this.author,
         'title':this.title,
         'releaseYear': this.releaseYear,
         'pages':this.pages,
+        'hasReaded': this.hasreaded,
     }
 }
-function addBookToLibrary(book) {
-    myLibrary.push(book);
+function validateBook(book){
+    let returnValue;
+    if (book.author === '' ||
+        book.title === '' ||
+        book.releaseYear === '' ||
+        book.pages === ''
+    ){
+        returnValue = false
+    }else{
+        returnValue = true
+    }
+    return returnValue;
+
 }
+function addBookToLibrary(book) {
+    let returnValue;
+    if (validateBook){
+        myLibrary.push(book);
+    }
+    return
+}
+
 function displayBooksInLibrary(library){
     for(let book of library){
-        console.log(`Author: ${book.author} Title: ${book.title} Released Year:(${book.releaseYear}) with ${book.pages} pages`)
+        console.log(`Author: ${book.author} Title: ${book.title} Released Year:
+            (${book.releaseYear}) with ${book.pages} pages`)
     }
 }
 /*test*/
@@ -49,13 +71,15 @@ addBookToLibrary(book2);
 addBookToLibrary(book3);
 addBookToLibrary(book4);
 addBookToLibrary(book5);
+console.log(myLibrary);
 
 function displayBook(library){
     for(let book of library){
         const readButton = document.createElement("button");
-        readButton.textContent = "No";
+        readButton.classList.add('readBtn');
+        readButton.textContent = book.hasReaded;
         const bookRow = table.insertRow();
-        bookRow.classList.add("book_row");
+        bookRow.classList.add("book-row");
         bookRow.insertCell(0).textContent = book.author;
         bookRow.insertCell(1).textContent = book.title;
         bookRow.insertCell(2).textContent = book.releaseYear;
@@ -63,5 +87,59 @@ function displayBook(library){
         bookRow.insertCell(4).appendChild(readButton)
     }
 }
-displayBook(myLibrary)
+function insertNewRow(author, title, releaseYear, pages, hasreaded ){
+    const newReadBtn = document.createElement("button");
+    newReadBtn.classList.add('readBtn');
+    newReadBtn.textContent = hasreaded;
+    const newRow = table.insertRow(-1);
+    newRow.insertCell(0).textContent = author;
+    newRow.insertCell(1).textContent = title;
+    newRow.insertCell(2).textContent = releaseYear;
+    newRow.insertCell(3).textContent = pages;
+    newRow.insertCell(4).appendChild(newReadBtn)
+}
 
+
+const showForm = document.querySelector(".show-form");
+const dialogAdd = document.querySelector("#add-new-dialog");
+const bookForm = document.querySelector("#book-form");
+const select = dialogAdd.querySelector("select");
+const  cancelBtn = document.querySelector("#cancel-btn");
+const  submitBtn = dialogAdd.querySelector("#confirm-Btn");
+
+showForm.addEventListener('click', () => {
+    dialogAdd.showModal();
+})
+
+bookForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    //get data
+    const authorValue = bookForm.elements['author'].value;
+    const titleValue = bookForm.elements['title'].value;
+    const yearValue = bookForm.elements['year'].value;
+    const pagesValue = bookForm.elements['pages'].value;
+    const hasreadedValue = bookForm.elements['hasReaded'].value;
+    const newBook = Book(authorValue, titleValue, yearValue, pagesValue, hasreadedValue);
+
+    addBookToLibrary(newBook);
+    insertNewRow(authorValue, titleValue, yearValue, pagesValue, hasreadedValue);
+    console.log(newBook);
+
+    dialogAdd.close();
+    bookForm.reset();
+})
+
+cancelBtn.addEventListener('click', () => {
+    dialogAdd.close()
+})
+
+//keep it always down
+displayBook(myLibrary)
+const readBtns = document.querySelectorAll(".readBtn");
+for (let btn of readBtns){
+    btn.addEventListener("click", () => {
+        btn.textContent === "No"? btn.textContent = "Yes":
+        btn.textContent = "No"
+    })
+}
