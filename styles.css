@@ -33,7 +33,8 @@ form p {
 }
 dialog {
     width: 450px;
-    height: 300px;
+    height: 350px;
+    border-radius: 15px;
 }
 form input, form option{
     height: 20px;

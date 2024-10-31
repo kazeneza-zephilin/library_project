@@ -12,8 +12,10 @@ const bookPages = tableHeaders.insertCell();
 bookPages.textContent = "pages";
 const readStatus = tableHeaders.insertCell();
 readStatus.textContent = "readed";
-document.body.appendChild(table);
+const deleteBtn = tableHeaders.insertCell();
+deleteBtn.textContent = "remove book";
 
+document.body.appendChild(table);
 table.appendChild(tableHeaders)
 
 const myLibrary = [];
@@ -78,6 +80,12 @@ function displayBook(library){
         const readButton = document.createElement("button");
         readButton.classList.add('readBtn');
         readButton.textContent = book.hasReaded;
+
+        const deleteBook = document.createElement("button");
+        deleteBook.classList.add("delete-book");
+        deleteBook.textContent = "delete";
+        deleteBook.style.color = 'red';
+
         const bookRow = table.insertRow();
         bookRow.classList.add("book-row");
         bookRow.insertCell(0).textContent = book.author;
@@ -85,6 +93,7 @@ function displayBook(library){
         bookRow.insertCell(2).textContent = book.releaseYear;
         bookRow.insertCell(3).textContent = book.pages;
         bookRow.insertCell(4).appendChild(readButton)
+        bookRow.insertCell(5).appendChild(deleteBook);
     }
 }
 function insertNewRow(author, title, releaseYear, pages, hasreaded ){
@@ -115,19 +124,36 @@ bookForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
     //get data
-    const authorValue = bookForm.elements['author'].value;
-    const titleValue = bookForm.elements['title'].value;
-    const yearValue = bookForm.elements['year'].value;
-    const pagesValue = bookForm.elements['pages'].value;
+    const authorValue = bookForm.elements['author'].value.trim();
+    const titleValue = bookForm.elements['title'].value.trim();
+    const yearValue = bookForm.elements['year'].value.trim();
+    const pagesValue = bookForm.elements['pages'].value.trim();
     const hasreadedValue = bookForm.elements['hasReaded'].value;
-    const newBook = Book(authorValue, titleValue, yearValue, pagesValue, hasreadedValue);
+    if (!authorValue ||
+        !titleValue ||
+        !yearValue ||
+        !pagesValue){
+            if (!document.querySelector('#alertMsg')){
+                const alertMsg = document.createElement('p');
+                alertMsg.id = 'alertMsg'
+                alertMsg.textContent = 'please fill all form'
+                alertMsg.style.color = 'red';
+                bookForm.appendChild(alertMsg);
 
-    addBookToLibrary(newBook);
-    insertNewRow(authorValue, titleValue, yearValue, pagesValue, hasreadedValue);
-    console.log(newBook);
+            }
+        }else{
+            const existingAlert = document.querySelector('#alertMsg');
+            if (existingAlert){
+                existingAlert.remove()
+            }
 
-    dialogAdd.close();
-    bookForm.reset();
+            const newBook = Book(authorValue, titleValue, yearValue, pagesValue, hasreadedValue);
+            addBookToLibrary(newBook);
+            insertNewRow(authorValue, titleValue, yearValue, pagesValue, hasreadedValue);
+            console.log(newBook);
+            dialogAdd.close();
+            bookForm.reset();
+        }
 })
 
 cancelBtn.addEventListener('click', () => {
@@ -143,3 +169,4 @@ for (let btn of readBtns){
         btn.textContent = "No"
     })
 }
+
