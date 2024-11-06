@@ -34,27 +34,7 @@ function Book(author, title, releaseYear, pages, hasreaded = "No") {
         'hasReaded': this.hasreaded,
     }
 }
-function validateBook(book){
-    let returnValue;
-    if (book.author === '' ||
-        book.title === '' ||
-        book.releaseYear === '' ||
-        book.pages === ''
-    ){
-        returnValue = false
-    }else{
-        returnValue = true
-    }
-    return returnValue;
 
-}
-function addBookToLibrary(book) {
-    let returnValue;
-    if (validateBook){
-        myLibrary.push(book);
-    }
-    return
-}
 
 function displayBooksInLibrary(library){
     for(let book of library){
@@ -62,6 +42,10 @@ function displayBooksInLibrary(library){
             (${book.releaseYear}) with ${book.pages} pages`)
     }
 }
+function addBookToLibrary(book) {
+    myLibrary.push(book);
+}
+
 /*test*/
 const book1 = Book('Leo Tolstoy', 'War and Peace','1869', '1,225');
 const book2 = Book('George Orwell', '1984', '1949', '328');
@@ -75,16 +59,28 @@ addBookToLibrary(book4);
 addBookToLibrary(book5);
 console.log(myLibrary);
 
+function removeBookFromLibrary(index){
+    myLibrary.splice(index, 1);
+    displayBook(myLibrary); //refresh book libray after deletion
+}
 function displayBook(library){
-    for(let book of library){
+    // table.innerHTML = '';
+    // table.appendChild(tableHeaders);
+    library.forEach((book, index)=> {
         const readButton = document.createElement("button");
         readButton.classList.add('readBtn');
         readButton.textContent = book.hasReaded;
 
         const deleteBook = document.createElement("button");
-        deleteBook.classList.add("delete-book");
+        deleteBook.classList.add("deleteBtn");
         deleteBook.textContent = "delete";
         deleteBook.style.color = 'red';
+
+        deleteBook.addEventListener('click', ()=> {
+            removeBookFromLibrary(index); //remove book from library
+        })
+    } 
+);
 
         const bookRow = table.insertRow();
         bookRow.classList.add("book-row");
@@ -92,12 +88,17 @@ function displayBook(library){
         bookRow.insertCell(1).textContent = book.title;
         bookRow.insertCell(2).textContent = book.releaseYear;
         bookRow.insertCell(3).textContent = book.pages;
-        bookRow.insertCell(4).appendChild(readButton)
+        bookRow.insertCell(4).appendChild(readButton);
         bookRow.insertCell(5).appendChild(deleteBook);
-    }
 }
-function insertNewRow(author, title, releaseYear, pages, hasreaded ){
+//adding new book to library
+function insertNewRow(author, title, releaseYear, pages, hasreaded){
     const newReadBtn = document.createElement("button");
+    const newDeleteBtn = document.createElement("button");
+    
+    newDeleteBtn.classList.add('deleteBtn');
+    newDeleteBtn.style.color = "red"
+    newDeleteBtn.textContent = "Delete"
     newReadBtn.classList.add('readBtn');
     newReadBtn.textContent = hasreaded;
     const newRow = table.insertRow(-1);
@@ -105,7 +106,15 @@ function insertNewRow(author, title, releaseYear, pages, hasreaded ){
     newRow.insertCell(1).textContent = title;
     newRow.insertCell(2).textContent = releaseYear;
     newRow.insertCell(3).textContent = pages;
-    newRow.insertCell(4).appendChild(newReadBtn)
+    newRow.insertCell(4).appendChild(newReadBtn);
+    newRow.insertCell(5).appendChild(newDeleteBtn);
+
+    newReadBtn.addEventListener("click", ()=> {
+        newReadBtn.textContent = newReadBtn.textContent === "No"? "Yes" : "No"
+    })
+    newDeleteBtn.addEventListener("click", ()=> {
+        newRow.remove();
+    })
 }
 
 
@@ -129,6 +138,7 @@ bookForm.addEventListener("submit", (event) => {
     const yearValue = bookForm.elements['year'].value.trim();
     const pagesValue = bookForm.elements['pages'].value.trim();
     const hasreadedValue = bookForm.elements['hasReaded'].value;
+    //empty form validation
     if (!authorValue ||
         !titleValue ||
         !yearValue ||
@@ -160,13 +170,12 @@ cancelBtn.addEventListener('click', () => {
     dialogAdd.close()
 })
 
-//keep it always down
+//initial adding eventlistner
 displayBook(myLibrary)
 const readBtns = document.querySelectorAll(".readBtn");
+const deleteBtns = document.querySelectorAll(".deleteBtn");
 for (let btn of readBtns){
     btn.addEventListener("click", () => {
-        btn.textContent === "No"? btn.textContent = "Yes":
-        btn.textContent = "No"
+        btn.textContent = btn.textContent === "No"? "Yes" : "No"
     })
 }
-
