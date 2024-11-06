@@ -57,15 +57,14 @@ addBookToLibrary(book2);
 addBookToLibrary(book3);
 addBookToLibrary(book4);
 addBookToLibrary(book5);
-console.log(myLibrary);
 
 function removeBookFromLibrary(index){
     myLibrary.splice(index, 1);
     displayBook(myLibrary); //refresh book libray after deletion
 }
 function displayBook(library){
-    // table.innerHTML = '';
-    // table.appendChild(tableHeaders);
+    table.innerHTML = '';
+    table.appendChild(tableHeaders);
     library.forEach((book, index)=> {
         const readButton = document.createElement("button");
         readButton.classList.add('readBtn');
@@ -79,8 +78,6 @@ function displayBook(library){
         deleteBook.addEventListener('click', ()=> {
             removeBookFromLibrary(index); //remove book from library
         })
-    } 
-);
 
         const bookRow = table.insertRow();
         bookRow.classList.add("book-row");
@@ -90,33 +87,14 @@ function displayBook(library){
         bookRow.insertCell(3).textContent = book.pages;
         bookRow.insertCell(4).appendChild(readButton);
         bookRow.insertCell(5).appendChild(deleteBook);
-}
-//adding new book to library
-function insertNewRow(author, title, releaseYear, pages, hasreaded){
-    const newReadBtn = document.createElement("button");
-    const newDeleteBtn = document.createElement("button");
-    
-    newDeleteBtn.classList.add('deleteBtn');
-    newDeleteBtn.style.color = "red"
-    newDeleteBtn.textContent = "Delete"
-    newReadBtn.classList.add('readBtn');
-    newReadBtn.textContent = hasreaded;
-    const newRow = table.insertRow(-1);
-    newRow.insertCell(0).textContent = author;
-    newRow.insertCell(1).textContent = title;
-    newRow.insertCell(2).textContent = releaseYear;
-    newRow.insertCell(3).textContent = pages;
-    newRow.insertCell(4).appendChild(newReadBtn);
-    newRow.insertCell(5).appendChild(newDeleteBtn);
 
-    newReadBtn.addEventListener("click", ()=> {
-        newReadBtn.textContent = newReadBtn.textContent === "No"? "Yes" : "No"
-    })
-    newDeleteBtn.addEventListener("click", ()=> {
-        newRow.remove();
-    })
+        readButton.addEventListener("click", () =>{
+            book.hasReaded = book.hasReaded === "No" ? "Yes" : "No";
+            readButton.textContent = book.hasReaded;
+        })
+    }
+);
 }
-
 
 const showForm = document.querySelector(".show-form");
 const dialogAdd = document.querySelector("#add-new-dialog");
@@ -159,8 +137,7 @@ bookForm.addEventListener("submit", (event) => {
 
             const newBook = Book(authorValue, titleValue, yearValue, pagesValue, hasreadedValue);
             addBookToLibrary(newBook);
-            insertNewRow(authorValue, titleValue, yearValue, pagesValue, hasreadedValue);
-            console.log(newBook);
+            displayBook(myLibrary)
             dialogAdd.close();
             bookForm.reset();
         }
