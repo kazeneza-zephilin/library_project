@@ -1,7 +1,8 @@
+//creating table UI
 const table = document.querySelector(".my_table");
 const tableHeaders = table.insertRow();
+//adding table header
 tableHeaders.classList.add('header-row', 'row');
-
 const bookAuthor = tableHeaders.insertCell();
 bookAuthor.textContent = 'Author';
 const bookTitle = tableHeaders.insertCell();
@@ -15,87 +16,96 @@ readStatus.textContent = "readed";
 const deleteBtn = tableHeaders.insertCell();
 deleteBtn.textContent = "remove book";
 
+//adding table to body DOM elt
 document.body.appendChild(table);
+//adding first row (header) to table
 table.appendChild(tableHeaders)
 
-const myLibrary = [];
 
-function Book(author, title, releaseYear, pages, hasreaded = "No") {
-    this.author = author;
-    this.title = title;
-    this.releaseYear = releaseYear;
-    this.pages = pages;
-    this.hasreaded = hasreaded
-    return {
-        'author': this.author,
-        'title':this.title,
-        'releaseYear': this.releaseYear,
-        'pages':this.pages,
-        'hasReaded': this.hasreaded,
+//factoring book constructor from function construtor to class
+class Book {
+    constructor(author, title, releaseYear, pages, hasReaded = "No"){
+        //check if class called with new keyword
+        if (!new.target){
+            throw new Error("You must use `new` keyword");
+        }
+        this.author = author;
+        this.title = title;
+        this.releaseYear = releaseYear;
+        this.pages = pages;
+        this.hasReaded = hasReaded;
+
     }
-}
+    static myLibrary = [];
+    //attaching function (methods) that works on book inside class
 
-
-function displayBooksInLibrary(library){
-    for(let book of library){
-        console.log(`Author: ${book.author} Title: ${book.title} Released Year:
-            (${book.releaseYear}) with ${book.pages} pages`)
+    static addBookToLibrary(book) {
+        Book.myLibrary.push(book);
     }
-}
-function addBookToLibrary(book) {
-    myLibrary.push(book);
-}
 
-/*test*/
-const book1 = Book('Leo Tolstoy', 'War and Peace','1869', '1,225');
-const book2 = Book('George Orwell', '1984', '1949', '328');
-const book3 = Book('J.R.R. Tolkien', 'The Lord of the Rings', '1954', '1,178');
-const book4 = Book('Harper Lee', 'To Kill a Mockingbird', '1960', '281');
-const book5 = Book('Gabriel García Márquez', 'One Hundred Years of Solitude', '1967', '417');
-addBookToLibrary(book1);
-addBookToLibrary(book2);
-addBookToLibrary(book3);
-addBookToLibrary(book4);
-addBookToLibrary(book5);
+    static removeBookFromLibrary(index){
+        Book.myLibrary.splice(index, 1);
+        Book.displayBook(Book.myLibrary); //refresh book libray after deletion
+    }
 
-function removeBookFromLibrary(index){
-    myLibrary.splice(index, 1);
-    displayBook(myLibrary); //refresh book libray after deletion
-}
-function displayBook(library){
-    table.innerHTML = '';
-    table.appendChild(tableHeaders);
-    library.forEach((book, index)=> {
-        const readButton = document.createElement("button");
-        readButton.classList.add('readBtn');
-        readButton.textContent = book.hasReaded;
-
-        const deleteBook = document.createElement("button");
-        deleteBook.classList.add("deleteBtn");
-        deleteBook.textContent = "delete";
-        deleteBook.style.color = 'red';
-
-        deleteBook.addEventListener('click', ()=> {
-            removeBookFromLibrary(index); //remove book from library
-        })
-
-        const bookRow = table.insertRow();
-        bookRow.classList.add("book-row");
-        bookRow.insertCell(0).textContent = book.author;
-        bookRow.insertCell(1).textContent = book.title;
-        bookRow.insertCell(2).textContent = book.releaseYear;
-        bookRow.insertCell(3).textContent = book.pages;
-        bookRow.insertCell(4).appendChild(readButton);
-        bookRow.insertCell(5).appendChild(deleteBook);
-
-        readButton.addEventListener("click", () =>{
-            book.hasReaded = book.hasReaded === "No" ? "Yes" : "No";
+    //rendering book on UI
+    static displayBook(){
+        table.innerHTML = ''; //cleaning dom
+        table.appendChild(tableHeaders);
+        Book.myLibrary.forEach((book, index)=> {
+            //adding read button to row dynamically
+            const readButton = document.createElement("button");
+            readButton.classList.add('readBtn');
             readButton.textContent = book.hasReaded;
-        })
+
+            //adding delete button to book row dynamically
+            const deleteBook = document.createElement("button");
+            deleteBook.classList.add("deleteBtn");
+            deleteBook.textContent = "delete";
+            deleteBook.style.color = 'red';
+
+            //remove book from library
+            deleteBook.addEventListener('click', ()=> {
+                Book.removeBookFromLibrary(index); //remove book from library
+            })
+            //inserting new book row
+            const bookRow = table.insertRow();
+            bookRow.classList.add("book-row");
+            bookRow.insertCell(0).textContent = book.author;
+            bookRow.insertCell(1).textContent = book.title;
+            bookRow.insertCell(2).textContent = book.releaseYear;
+            bookRow.insertCell(3).textContent = book.pages;
+            bookRow.insertCell(4).appendChild(readButton);
+            bookRow.insertCell(5).appendChild(deleteBook);
+
+            //toggle `has readed` property of book row
+            readButton.addEventListener("click", () =>{
+                this.hasReaded = this.hasReaded === "No" ? "Yes" : "No";
+                readButton.textContent = this.hasReaded;
+            })
+        }
+    );
     }
-);
+
+
 }
 
+//creating book instances
+const book1 = new Book('Leo Tolstoy', 'War and Peace','1869', '1,225');
+const book2 = new Book('George Orwell', '1984', '1949', '328');
+const book3 = new Book('J.R.R. Tolkien', 'The Lord of the Rings', '1954', '1,178');
+const book4 = new Book('Harper Lee', 'To Kill a Mockingbird', '1960', '281');
+const book5 = new Book('Gabriel García Márquez', 'One Hundred Years of Solitude', '1967', '417');
+
+//populate sample books to library
+Book.addBookToLibrary(book1);
+Book.addBookToLibrary(book2);
+Book.addBookToLibrary(book3);
+Book.addBookToLibrary(book4);
+Book.addBookToLibrary(book5);
+
+
+//selecting dom element
 const showForm = document.querySelector(".show-form");
 const dialogAdd = document.querySelector("#add-new-dialog");
 const bookForm = document.querySelector("#book-form");
@@ -103,12 +113,16 @@ const select = dialogAdd.querySelector("select");
 const  cancelBtn = document.querySelector("#cancel-btn");
 const  submitBtn = dialogAdd.querySelector("#confirm-Btn");
 
+
+//get new book from form submission of new book
+
+//displaying user input form dialog
 showForm.addEventListener('click', () => {
     dialogAdd.showModal();
 })
 
 bookForm.addEventListener("submit", (event) => {
-    event.preventDefault();
+    event.preventDefault(); //avoiding page releod
 
     //get data
     const authorValue = bookForm.elements['author'].value.trim();
@@ -135,9 +149,9 @@ bookForm.addEventListener("submit", (event) => {
                 existingAlert.remove()
             }
 
-            const newBook = Book(authorValue, titleValue, yearValue, pagesValue, hasreadedValue);
-            addBookToLibrary(newBook);
-            displayBook(myLibrary)
+            const newBook = new Book(authorValue, titleValue, yearValue, pagesValue, hasreadedValue);
+            Book.addBookToLibrary(newBook);
+            Book.displayBook(); // adding new book to the table
             dialogAdd.close();
             bookForm.reset();
         }
@@ -147,12 +161,5 @@ cancelBtn.addEventListener('click', () => {
     dialogAdd.close()
 })
 
-//initial adding eventlistner
-displayBook(myLibrary)
-const readBtns = document.querySelectorAll(".readBtn");
-const deleteBtns = document.querySelectorAll(".deleteBtn");
-for (let btn of readBtns){
-    btn.addEventListener("click", () => {
-        btn.textContent = btn.textContent === "No"? "Yes" : "No"
-    })
-}
+//displaying current books in library
+Book.displayBook();``
