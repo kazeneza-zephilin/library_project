@@ -34,10 +34,11 @@ form p {
 dialog {
     width: 450px;
     height: 350px;
-    border-radius: 15px;
+    border-radius: 10px;
 }
 form input, form option{
-    height: 20px;
+    height: 30px;
+    border-radius: 2px;
 }
 .readBtn {
     width: 50px;

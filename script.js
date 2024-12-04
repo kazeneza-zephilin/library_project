@@ -53,6 +53,7 @@ class Book {
         table.innerHTML = ''; //cleaning dom
         table.appendChild(tableHeaders);
         Book.myLibrary.forEach((book, index)=> {
+            console.log(this === Book)
             //adding read button to row dynamically
             const readButton = document.createElement("button");
             readButton.classList.add('readBtn');
